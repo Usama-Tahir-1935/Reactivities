@@ -7,10 +7,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers(); // Add this line to register controllers.
-
+// This service registered the DbContext database in the application. 
 builder.Services.AddDbContext<DataContext>(opt => {
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+// This service allow the browser to fetch the data in any api like in our case Postman.For example this configuration enables CORS so that your application accepts requests from localhost://3000 with any method and headers.
+builder.Services.AddCors(opt => {
+    opt.AddPolicy("CorsPolicy", policy => {
+        policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
+    });
+});
+
 
 var app = builder.Build();
 
@@ -21,9 +28,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// "CORS" cross-origin resource policy is a security features implemented by the browsers.
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
-
-app.MapControllers(); // Top-level route registration for attribute-routed controllers.
+app.UseRouting();
+app.UseAuthorization();
+app.MapControllers(); // By using this you enable a flexible and straightforward way to handle routing in ASP.NET Core applications.Top-level route registration for attribute-routed controllers.
 
 app.MapGet("/weatherforecast", () =>
 {
