@@ -1,23 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddControllers(); // Add this line to register controllers.
-// This service registered the DbContext database in the application. 
-builder.Services.AddDbContext<DataContext>(opt => {
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
-// This service allow the browser to fetch the data in any api like in our case Postman.For example this configuration enables CORS so that your application accepts requests from localhost://3000 with any method and headers.
-builder.Services.AddCors(opt => {
-    opt.AddPolicy("CorsPolicy", policy => {
-        policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
-    });
-});
-
+// Add Services to the container.
+builder.Services.AddControllers();
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
 
