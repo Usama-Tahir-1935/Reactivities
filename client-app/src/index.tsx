@@ -4,6 +4,7 @@ import 'semantic-ui-css/semantic.min.css'
 import './app/layout/styles.css';
 import reportWebVitals from './reportWebVitals';
 import App from './app/layout/App';
+import { store, StoreContext } from './app/stores/store';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,7 +12,9 @@ const root = ReactDOM.createRoot(
 root.render(
   // when we use strict mode in react then our component is render twice in development mode not in production mode.
   // <React.StrictMode>
+    <StoreContext.Provider value={store}>
     <App />
+    </StoreContext.Provider>
   // </React.StrictMode>
 );
 
