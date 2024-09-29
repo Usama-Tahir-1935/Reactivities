@@ -23,6 +23,16 @@ export default class ActivityStore { // The ActivityStore class is used to manag
             Date.parse(a.date) - Date.parse(b.date));
     }
 
+    get groupedActivities() {
+        return Object.entries(
+            this.activitiesByDate.reduce((activities, activity) => {
+                const date = activity.date;
+                activities[date] = activities[date] ? [...activities[date], activity] : [activity];
+                return activities;
+            }, {} as {[key: string]: Activity[]})
+        )
+    }
+
     // Fetches the activities from the backend, processes the date for each, and stores them in the activities list.
     loadActivities = async () => {
         this.setLoadingInitial(true);

@@ -9,7 +9,7 @@ import {v4 as uuid} from 'uuid';
 
 export default observer (function ActivityForm () {
     const {activityStore} = useStore();
-    const {selectedActivity, createActivity, updateActivity, loading, loadActivity, loadingInitial} = activityStore;
+    const {createActivity, updateActivity, loading, loadActivity, loadingInitial} = activityStore;
 
     // is used in React (with React Router) to extract route parameters from the URL. 
     const {id} = useParams(); 
