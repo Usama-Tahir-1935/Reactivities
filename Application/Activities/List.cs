@@ -1,4 +1,5 @@
 // This code is a part of a feature in an application where Mediator is used to handle queries in a clean and decoupled manner.
+using Application.Core;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,10 @@ namespace Application.Activities
     public class List
     {
         // This class represent the request to get a list of activities. This class inherit from the "IRequest" Its a simple class used to encapsulate the request for the list of activities.
-        public class Query : IRequest<List<Activity>> {} 
+        public class Query : IRequest<Result<List<Activity>>> {} 
 
         // This class implements the logic to handle this request by fetching all activities from the database using entity framework ToListAsync method.
-        public class Handler : IRequestHandler<Query, List<Activity>>
+        public class Handler : IRequestHandler<Query, Result<List<Activity>>>
         {
             private readonly DataContext _context;
 
@@ -24,9 +25,9 @@ namespace Application.Activities
 
             // This method is to retrieve all activities from the database asynchronously and return them as a list.
             // A "CancellationToken" is used in .NET to signal that an operation should be canceled. It's particularly useful when dealing with asynchronous operations or long-running tasks, where you want to give the caller the ability to cancel the operation before it completes
-            public async Task<List<Activity>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<Result<List<Activity>>> Handle(Query request, CancellationToken cancellationToken)
             {
-                return await _context.Activities.ToListAsync();
+                return Result<List<Activity>>.Success(await _context.Activities.ToListAsync());
             }
         }
     }

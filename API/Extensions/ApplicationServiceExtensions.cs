@@ -3,6 +3,8 @@ using Persistence;
 using MediatR;
 using Application.Activities;
 using Application.Core;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 // This method allowing you to add custom services to the DI container. we use this class of Extension method is bcz we cleanup our program.cs file. This code is in the program.cs file and now we create the new file and put this code in this file.
 namespace API.Extensions
@@ -29,6 +31,8 @@ namespace API.Extensions
             });
             services.AddMediatR(typeof(List.Handler));
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining<Create>(); // Here we specify just one of our handler that contains some validation.
 
             return services;
         }
