@@ -4,6 +4,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { Activity } from "../../models/activity";
 import agent from "../api/agent";
 import {v4 as uuid} from 'uuid'; // In React (or JavaScript in general), UUID (Universally Unique Identifier) is used to generate unique IDs
+import { format } from "date-fns";
 
 export default class ActivityStore { // The ActivityStore class is used to manage the state of activities.
     activityRegistry = new Map<string, Activity>(); // Stores a list of activities.
@@ -20,13 +21,13 @@ export default class ActivityStore { // The ActivityStore class is used to manag
     // This is a computer property that return the list of activity sorting by dates.
     get activitiesByDate() {
         return Array.from(this.activityRegistry.values()).sort((a, b) => 
-            Date.parse(a.date) - Date.parse(b.date));
+            a.date!.getTime() - b.date!.getTime());
     }
 
     get groupedActivities() {
         return Object.entries(
             this.activitiesByDate.reduce((activities, activity) => {
-                const date = activity.date;
+                const date = format(activity.date!, 'dd MMMM yyy');
                 activities[date] = activities[date] ? [...activities[date], activity] : [activity];
                 return activities;
             }, {} as {[key: string]: Activity[]})
@@ -70,7 +71,7 @@ export default class ActivityStore { // The ActivityStore class is used to manag
     }
 
     private setActivity = (activity: Activity) => {
-        activity.date = activity.date.split('T')[0];
+        activity.date = new Date(activity.date!);
         this.activityRegistry.set(activity.id, activity);
     }
 
@@ -138,17 +139,4 @@ export default class ActivityStore { // The ActivityStore class is used to manag
             })
         }
     }
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
